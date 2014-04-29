@@ -5,6 +5,7 @@
 int timeCounter = 0;
 const int ledPinLoudness=8;
 const int ledPinVibration=9;
+const int VibIn = 2;
 int vibCounter = 0;
 int vibSensorValue = 0;
 float loudnessCounter = 0;
@@ -68,6 +69,7 @@ void setup() {
   // Set Pin mode
   pinMode(ledPinLoudness,OUTPUT);
   pinMode(ledPinVibration,OUTPUT);
+  pinMode(VibIn, INPUT);
 
   //Set Timer for callback function
   MsTimer2::set(3000,SendData);
@@ -81,20 +83,21 @@ void loop() {
 //      timeCounter = 0;
 //    }
     while(true) {
-      vibSensorValue = analogRead(A0);
+//      vibSensorValue = analogRead(A0);
+      vibSensorValue = digitalRead(VibIn);
       CheckVibration();  
-      delay(10);
+      delay(20);
   
       loudnessSensorValue = analogRead(A5);  
       CheckLoudness();
-      delay(10);      
+      delay(20);      
     }
 
 }
 
 void CheckLoudness () {
   loudnessCounter += loudnessSensorValue/1000;
-  if(loudnessSensorValue > 600) {
+  if(loudnessSensorValue > 200) {
     digitalWrite(ledPinLoudness,HIGH);
   } else {
     digitalWrite(ledPinLoudness,LOW);
@@ -102,8 +105,7 @@ void CheckLoudness () {
 }
 
 void CheckVibration () {
-  if(vibSensorValue > 100) {
-    Serial.println(vibSensorValue);
+  if(vibSensorValue) {
     vibCounter++;
     digitalWrite(ledPinVibration,HIGH);
   } else {
